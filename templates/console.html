@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+  <h3>Mypage[{{ username }}]</h3>
+</div>
+{% endblock header %}
+
+{% block content %}
+
+<div class="container">
+  <div class="alert alert-success" role="alert">
+    {% include 'button.html' %}
+    <br>
+    <hr>
+    <body>
+    <form method="POST">{% csrf_token %}
+        <div class="mb-3">
+          <label for="modeselect" class="form-label">Mode</label>
+          <input type="text" class="form-control" id="mode" aria-describedby="modeHelp" name="mode" required>
+          <div id="modeHelp" class="form-text">You can choose "select", "download" and "delete".</div>
+        </div>
+        <div class="mb-3">
+            <label for="chselect" class="form-label">Channel</label>
+            <input type="text" class="form-control" id="channel" aria-describedby="chHelp" name="channel" required>
+            <div id="chHelp" class="form-text">You can also choose "$all".</div>
+        </div>
+        <div class="mb-3">
+            <label for="nameselect" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" aria-describedby="nameHelp" name="name" required>
+            <div id="nameHelp" class="form-text">You can also choose "$all".</div>
+        </div>
+        <div class="mb-3">
+        <button type="submit" class="btn btn-warning">Submit</button>
+        </div>
+    </form>
+    </body>
+  </div>
+</div>
+
+{% include 'modal.html' %}
+
+{% endblock content %}

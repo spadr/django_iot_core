@@ -1,0 +1,70 @@
+<!-- Modal -->
+<div class="modal fade" id="ConsoleModal" tabindex="-1" aria-labelledby="ConsoleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form action="{% url 'console' %}" method="POST">{% csrf_token %}
+        <div class="m-3">
+          <label for="modeselect" class="form-label">Mode</label>
+          <input type="text" class="form-control" id="mode" aria-describedby="modeHelp" name="mode" required>
+          <div id="modeHelp" class="form-text">You can choose "download", "delete" and "select".</div>
+        </div>
+        <div class="m-3">
+            <label for="chselect" class="form-label">Channel</label>
+            <input type="text" class="form-control" id="channel" aria-describedby="chHelp" name="channel" required>
+            <div id="chHelp" class="form-text">You can also choose "$all".</div>
+        </div>
+        <div class="m-3">
+            <label for="nameselect" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" aria-describedby="nameHelp" name="name" required>
+            <div id="nameHelp" class="form-text">You can also choose "$all".</div>
+        </div>
+        <div class="text-center">
+          <div class="m-3">
+            <button type="submit" class="btn btn-danger">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="PostModal" tabindex="-1" aria-labelledby="PostModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form action="{% url 'browserpost' %}" method="POST">{% csrf_token %}
+        <div class="m-3">
+            <label for="chselect" class="form-label">Channel</label>
+            <input type="text" class="form-control" id="channel" name="channel" required>
+        </div>
+        <div class="m-3">
+            <label for="nameselect" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="m-3">
+          <label for="modeselect" class="form-label">Value(number)</label>
+          <input type="text" class="form-control" id="data" name="data" required>
+        </div>
+        <div class="text-center">
+          <div class="m-3">
+            <button type="submit" class="btn btn-info">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ProfileModal" tabindex="-1" aria-labelledby="ProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="text-center">
+        <div class="m-3">
+          <form action="{% url 'profile' %}" method="POST">{% csrf_token %}
+            {{ profile_form.as_p }}
+            <button type="submit" class="btn btn-warning">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

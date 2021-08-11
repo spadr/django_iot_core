@@ -1,0 +1,25 @@
+[dev-packages]
+
+[packages]
+django = "==3.1.6"
+djangorestframework = "==3.12.4"
+djangorestframework-simplejwt = "==4.7.2"
+django-filter = "==2.4.0"
+django-pandas = "==0.6.4"
+gunicorn = "==20.0.2"
+plotly = "==4.14.3"
+psycopg2-binary = "==2.8.6"
+pillow = "==8.3.1"
+requests = "==2.26.0"
+
+
+[requires]
+python_version = "3.8"
+
+[scripts]
+run="python manage.py runserver"
+migrate ="python manage.py migrate"
+make="python manage.py makemigrations"
+static="python manage.py collectstatic"
+super="python manage.py createsuperuser"
+guni="gunicorn iotproject.wsgi:application --bind 0.0.0.0:8000"

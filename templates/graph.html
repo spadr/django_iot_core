@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+
+<div class="alert alert-primary" role="alert">
+  <h3>Mypage[{{ username }}]</h3>
+</div>
+
+{% endblock header %}
+
+{% block content %}
+
+<div class="container">
+  <div class="alert alert-success" role="alert">
+    {% include 'button.html' %}
+    <br>
+    <hr>
+    {% autoescape off %}
+    {% for contents in plot_gantt %}
+      {{contents.plot}}
+      <hr>
+    {% empty %}
+      <p>データがありません</p>
+    {% endfor %}
+    {% endautoescape %}
+  </div>
+</div>
+
+{% include 'modal.html' %}
+
+{% endblock content %}

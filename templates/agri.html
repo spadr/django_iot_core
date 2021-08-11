@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block header %}
+
+<div class="alert alert-primary" role="alert">
+  <h3>Mypage[{{ username }}]</h3>
+</div>
+
+{% endblock header %}
+
+{% block content %}
+
+<div class="container">
+  <div class="alert alert-success" role="alert">
+    {% include 'button.html' %}
+    <br>
+    <hr>
+    {% autoescape off %}
+    {% for content in contents %}
+    <div class="font-large container row col">
+      <p>{{ content.kinds_of_senser }}</p>
+      <table class="table bg-light">
+        <thead>
+          <tr>
+            {% for p in content.building_name %}
+              <th scope="col" class="table-active">{{ p }}</th>
+            {% empty %}
+              <p>データがありません</p>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for v in content.latest_value %}
+              <td scope="row">{{ v }}</td table-primary>
+            {% empty %}
+              <p>データがありません</p>
+            {% endfor %}
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            {% for t in content.latest_time %}
+              <td scope="row" class="table-active">{{ t }}</td>
+            {% empty %}
+              <p>データがありません</p>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {{ content.figure_plot }}
+    {{ content.heatmap_plot }}
+    <hr>
+    {% empty %}
+     <p>データがありません</p>
+    {% endfor %}
+    {% endautoescape %}
+  </div>
+</div>
+
+{% include 'modal.html' %}
+
+{% endblock content %}

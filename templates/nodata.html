@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="UTF-8" />
+  </head>
+  <body>
+  <section>
+    <div class="errorNoData">
+        <h1>No Data Found</h1>
+    </div>
+    <p>データが見つかりません</p>
+    <pre>
+　 /＼＿＿_／＼
+／　／　　 　ヽ ::: ＼
+|　（●）,　、（●）、　|
+|　　,,ノ(、_, )ヽ、,, 　 |
+|　　　,;‐＝‐ヽ 　 .:::::|
+＼　　｀ニニ´　 .:::／　　　　　　NO DATA FOUND!!
+／｀ー‐--‐‐―´´＼
+　 　　　　 .ｎ:n　　　 ｎｎ
+　 　 　　nf|｜| 　　　| | |^!n
+　 　 　　ｆ|.| | ∩　　∩|..| |.|
+　 　 　　|: ::　 ! }　　{！ ::: :|
+　 　　　 ヽ　　,イ 　　ヽ　 :イ 　
+    </pre>
+    {% if exception %}
+    <p style="color: red">{{ exception }}</p>
+    {% endif %}
+  </section>
+  <section>
+      <p><a href="javascript:history.back()">&lt; Back</a></p>
+  </section>
+  </body>
+</html>

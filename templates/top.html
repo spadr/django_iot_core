@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <div class="alert alert-success" role="alert">
+    <img src="{% static 'top.jpg' %}" alt="meme_img">
+    <hr>
+    <a href="{% url 'read' %}" class="btn btn-secondary" role="button" aria-pressed="true">Mypage</a>
+    <a href="{% url 'login' %}" class="btn btn-secondary" role="button" aria-pressed="true">Sign IN</a>
+    <a href="{% url 'logout' %}" class="btn btn-secondary" role="button" aria-pressed="true">Sign OUT</a>
+    <a href="{% url 'signup' %}" class="btn btn-secondary" role="button" aria-pressed="true">Sign UP</a>
+    <br>
+  </div>
+</div>
+{% endblock content %}

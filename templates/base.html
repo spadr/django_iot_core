@@ -1,0 +1,22 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="{% static 'bootstrap-5.0.0-beta1-dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'plotly-2.2.0.min.js' %}"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-5.0.0-beta1-dist/css/bootstrap.min.css' %}">
+    {% block customcss %}
+    <link rel='stylesheet' type='text/css' href="{% static 'instyle.css' %}">
+    {% endblock customcss %}
+    <title>Data collecting system</title>
+  </head>
+      {% block header %}
+      {% endblock header %}
+
+      {% block content %}
+      {% endblock content %}
+</html>
