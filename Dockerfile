@@ -37,3 +37,4 @@ USER ${UID}
 
 # run entrypoint shell file
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+
