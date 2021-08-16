@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .views.models import DeviceModel, NumberModel, ImageModel
+from .models import DeviceModel, NumberModel, ImageModel
 
 # Register your models here.
 

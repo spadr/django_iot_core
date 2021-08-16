@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Profile, ImageModel
+from ..models import Profile, ImageModel
 
 class ProfileForm(forms.ModelForm):
     class Meta:

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.core import serializers
 from django.db import transaction
 
-from .models import DeviceModel, NumberModel, ImageModel
+from ..models import DeviceModel, NumberModel, ImageModel
 
 import secrets
 import datetime
