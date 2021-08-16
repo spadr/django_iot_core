@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
-from .models import DeviceModel, NumberModel, ImageModel, Profile
+from ..models import DeviceModel, NumberModel, ImageModel, Profile
 
 from .forms import ProfileForm, ImageForm
 
