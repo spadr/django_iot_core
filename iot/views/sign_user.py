@@ -8,7 +8,7 @@ def loginfunc(request):
         #ユーザー認証
         email = request.POST['emailadress']
         psw = request.POST['password']
-        user = authenticate(request, username=email, password=psw)
+        user = authenticate(request, email=email, password=psw)
 
         if user is not None:
             #ユーザー認証OK

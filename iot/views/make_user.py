@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from iot.models import User, DeviceModel, NumberModel, ImageModel
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
@@ -17,38 +17,38 @@ def signupfunc(request):
         psw = request.POST['password']
 
         #ユーザー登録
-        try :
-            user = User.objects.create_user(email, email, psw)
-        except :
-            #ユーザー登録NG
-            return render(request, 'signup.html', {'error' : 'このユーザーはすでに登録されています。'})
+        #try :
+        user = User.objects.create_user(email, psw)
+        #except :
+        #    #ユーザー登録NG
+        #    return render(request, 'signup.html', {'error' : 'このユーザーはすでに登録されています。'})
         
-        #Accesskeyの生成
-        try:
-            user.is_active = False
-            user.save()
-        except :
-            #ダメなとき
-            return render(request, 'signup.html', {'error' : '登録できません。'})
+        #try:
+        user.is_active = False
+        user.save()
+        #except :
+        #    #ダメなとき
+        #    return render(request, 'signup.html', {'error' : '登録できません。'})
         
         #認証メールの作成
-        try:
-            from_email = 'EMAIL_ADDRESS'
-            recipient_list = [email]
-            subject = 'Activate Your Account'#メールタイトル
-            current_site = get_current_site(request)
-            domain = current_site.domain
-            #内容はtemplateから
-            context = render_to_string('account_activation_email.html',
-            {
-                'protocol': request.scheme,
-                'domain': domain,
-                'token': dumps(user.pk),
-                'user': user,
-            })
-        except :
-            #ダメなとき
-            return render(request, 'signup.html', {'error' : 'メール関係の変数が不正です。'})
+        #try:
+        from_email = 'EMAIL_ADDRESS'
+        recipient_list = [email]
+        subject = 'Activate Your Account'#メールタイトル
+        current_site = get_current_site(request)
+        domain = current_site.domain
+        #内容はtemplateから
+        uuid_str = str(user.pk)
+        context = render_to_string('account_activation_email.html',
+        {
+            'protocol': request.scheme,
+            'domain': domain,
+            'token': dumps(uuid_str),
+            'email': user.email,
+        })
+        #except :
+        #    #ダメなとき
+        #    return render(request, 'signup.html', {'error' : 'メール関係の変数が不正です。'})
         
         #認証メールの作成
         try:

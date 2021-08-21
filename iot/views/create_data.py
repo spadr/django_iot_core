@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -6,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.core import serializers
 from django.db import transaction
 
-from ..models import DeviceModel, NumberModel, ImageModel
+from iot.models import User, DeviceModel, NumberModel, ImageModel
 
 import secrets
 import datetime
@@ -42,10 +41,10 @@ class DeviceSetApi(APIView):
         device_status = bool(packet['monitoring'])
         
         try:
-            device = DeviceModel.objects.filter(user=request.user, channel=device_channel, name=device_name).order_by('activity').reverse().select_related()[0]
+            device = DeviceModel.objects.filter(email=request.user, channel=device_channel, name=device_name).order_by('activity').reverse().select_related()[0]
             #device = DeviceModel.objects.get(user=request.user, channel=device_channel, name=device_name)
         except:
-            device = DeviceModel.objects.create(user=request.user,
+            device = DeviceModel.objects.create(email=request.user,
                                                 name=device_name,
                                                 channel=device_channel,
                                                 data_type=device_type,
@@ -153,7 +152,7 @@ def browserpostfunc(request):
         try:
             device = DeviceModel.objects.get(user=request.user, channel=device_channel, name=device_name)
         except:
-            device = DeviceModel.objects.create(user=request.user,
+            device = DeviceModel.objects.create(email=request.user,
                                                 name=device_name,
                                                 channel=device_channel,
                                                 data_type='number',
