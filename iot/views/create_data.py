@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -6,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.core import serializers
 from django.db import transaction
 
-from ..models import DeviceModel, NumberModel, ImageModel
+from iot.models import User, DeviceModel, NumberModel, ImageModel
 
 import secrets
 import datetime
@@ -42,10 +41,10 @@ class DeviceSetApi(APIView):
         device_status = bool(packet['monitoring'])
         
         try:
-            device = DeviceModel.objects.filter(user=request.user, channel=device_channel, name=device_name).order_by('activity').reverse().select_related()[0]
-            #device = DeviceModel.objects.get(user=request.user, channel=device_channel, name=device_name)
+            device = DeviceModel.objects.filter(email=request.user, channel=device_channel, name=device_name).order_by('activity').reverse().select_related()[0]
+            #device = DeviceModel.objects.get(email=request.user, channel=device_channel, name=device_name)
         except:
-            device = DeviceModel.objects.create(user=request.user,
+            device = DeviceModel.objects.create(email=request.user,
                                                 name=device_name,
                                                 channel=device_channel,
                                                 data_type=device_type,
@@ -84,7 +83,7 @@ class DataReceiveApi(APIView):
             device_time = int(packet['time'])
             device_data = packet['data']
             
-            device = DeviceModel.objects.get(user=request.user, id=device_token)
+            device = DeviceModel.objects.get(email=request.user, id=device_token)
             device.activity = timezone.localtime(datetime.datetime.fromtimestamp(now_timestamp, UTC))
             #if device.is_active == False:
             #send line massege
@@ -131,7 +130,7 @@ class DataSendApi(APIView):
         try:
             device_token = datas['device_token']
             data_lengh = int(datas['lengh']) + 1
-            queryset = NumberModel.objects.filter(device__user=request.user, device__id=device_token).order_by('time').reverse().select_related()[:data_lengh]
+            queryset = NumberModel.objects.filter(device__email=request.user, device__id=device_token).order_by('time').reverse().select_related()[:data_lengh]
             res_query = serializers.serialize('json', queryset)
         except:
             return Response(status=HTTP_404_NOT_FOUND)#該当データ無しのレスポンス
@@ -151,9 +150,9 @@ def browserpostfunc(request):
         device_channel = request.POST['channel']
         device_value = request.POST['data']
         try:
-            device = DeviceModel.objects.get(user=request.user, channel=device_channel, name=device_name)
+            device = DeviceModel.objects.get(email=request.user, channel=device_channel, name=device_name)
         except:
-            device = DeviceModel.objects.create(user=request.user,
+            device = DeviceModel.objects.create(email=request.user,
                                                 name=device_name,
                                                 channel=device_channel,
                                                 data_type='number',
