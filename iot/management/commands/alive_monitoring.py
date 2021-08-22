@@ -1,14 +1,9 @@
 from django.core.management.base import BaseCommand
-from iot.views.models import DeviceModel, Profile
-from django.contrib.auth.models import User
-from django.conf import settings
-
-from django.core.mail import send_mail
-import requests
+from iot.models import User, DeviceModel
 
 import datetime
 
-def mkmess(l,username):
+def mkmess(l):
     message = '\nYour device is stopping!\n'
     for dev in l:
         message += '['+dev[0]+'/'+dev[1]+']'+'\n'
@@ -23,11 +18,11 @@ class Command(BaseCommand):
         devices = DeviceModel.objects.filter(monitoring=True, is_active=True).select_related()
         users = User.objects.all()
         for user in users:
-            profile = Profile.objects.get(user=user)
-            if not profile.alive_monitoring:
+            if not user.alive_monitoring:
+                print('No needs monitoring :', user.email)
                 continue
             
-            devices = DeviceModel.objects.filter(user=user, monitoring=True, is_active=True).order_by('channel', 'name').select_related()
+            devices = DeviceModel.objects.filter(email=user, monitoring=True, is_active=True).order_by('channel', 'name').select_related()
             dead_device = []
             for device in devices:
                 latest = device.activity
@@ -39,19 +34,28 @@ class Command(BaseCommand):
                     device.save()
             
             if len(dead_device)!=0:
-                if profile.send_message_to_email:
+                print('Message send to ' + user.email)
+                context = mkmess(dead_device)
+                if user.send_message_to_email:
                     from_email = 'EMAIL_ADDRESS'
-                    recipient_list = [user.email]
-                    subject = 'Your Device Is Stpping '#メールタイトル
-                    context = mkmess(dead_device,user.email)
-                    print('Email send to ' + user.email)
-                    send_mail(subject, context, from_email, recipient_list)
+                    subject = 'Your Device Is Stpping'
+                    try:
+                        user.email_user(subject, context, from_email)
+                    except:
+                        print('ERR Email :', user.email)
+                    
+                if user.line_token!='' and user.send_message_to_line:
+                    try:
+                        user.line_user(msg=context)
+                    except:
+                        print('ERR LINE :', user.email)
 
-                if profile.line_token!='' and profile.send_message_to_line:
-                    ACCESS_TOKEN = profile.line_token
-                    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
-                    data = {"message": mkmess(dead_device,user.email)}
-                    requests.post("https://notify-api.line.me/api/notify",headers=headers,data=data,)
-                    print('LINE send to ' + ACCESS_TOKEN)
+                if user.slack_token!='' and user.slack_channel!='' and user.send_message_to_slack:
+                    try:
+                        user.slack_user(msg=context)
+                    except:
+                        print('ERR slack :', user.email)
+            else:
+                print('All Device Is Running :', user.email)
+
         print("END Alive Monitoring")
-                

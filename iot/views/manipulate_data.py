@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
-from ..models import NumberModel, DeviceModel, Profile
+from iot.models import User, DeviceModel, NumberModel, ImageModel
 
 import datetime
 
@@ -14,7 +13,7 @@ import pandas as pd
 
 @login_required
 def consolefunc(request):
-    username = request.user.get_username()
+    username = request.user
     if request.method == "GET":#GETの処理
         return redirect(request.META['HTTP_REFERER'])
     
@@ -29,18 +28,18 @@ def consolefunc(request):
         if mode == 'download':
             if device_channel =='$all':
                 if device_name =='$all':
-                    user_db = NumberModel.objects.filter(device__user=request.user).order_by('time').values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user)
+                    user_db = NumberModel.objects.filter(device__email=request.user).order_by('time').values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user)
                 else:
-                    user_db = NumberModel.objects.filter(device__user=request.user, device__name=device_name).order_by('time').select_related().values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user, name=device_name)
+                    user_db = NumberModel.objects.filter(device__email=request.user, device__name=device_name).order_by('time').select_related().values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user, name=device_name)
             else:
                 if device_name =='$all':
-                    user_db = NumberModel.objects.filter(device__user=request.user, device__channel=device_channel).order_by('time').select_related().values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user, channel=device_channel)
+                    user_db = NumberModel.objects.filter(device__email=request.user, device__channel=device_channel).order_by('time').select_related().values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user, channel=device_channel)
                 else:
-                    user_db = NumberModel.objects.filter(device__user=request.user, device__name=device_name, device__channel=device_channel).order_by('time').select_related().values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user, name=device_name, channel=device_channel)
+                    user_db = NumberModel.objects.filter(device__email=request.user, device__name=device_name, device__channel=device_channel).order_by('time').select_related().values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user, name=device_name, channel=device_channel)
             df = read_frame(user_db)
             now_ts = int(datetime.datetime.now().timestamp())
             response = HttpResponse(content_type='text/csv')
@@ -54,18 +53,18 @@ def consolefunc(request):
         elif mode == 'delete':
             if device_channel =='$all':
                 if device_name =='$all':
-                    user_db = NumberModel.objects.filter(device__user=request.user).order_by('time')#.values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user)
+                    user_db = NumberModel.objects.filter(device__email=request.user).order_by('time')#.values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user)
                 else:
-                    user_db = NumberModel.objects.filter(device__user=request.user, device__name=device_name).order_by('time').select_related()#.values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user, name=device_name)
+                    user_db = NumberModel.objects.filter(device__email=request.user, device__name=device_name).order_by('time').select_related()#.values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user, name=device_name)
             else:
                 if device_name =='$all':
-                    user_db = NumberModel.objects.filter(device__user=request.user, device__channel=device_channel).order_by('time').select_related()#.values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user, channel=device_channel)
+                    user_db = NumberModel.objects.filter(device__email=request.user, device__channel=device_channel).order_by('time').select_related()#.values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user, channel=device_channel)
                 else:
-                    user_db = NumberModel.objects.filter(device__user=request.user, device__name=device_name, device__channel=device_channel).order_by('time').select_related()#.values('time', 'device__channel', 'device__name', 'data')
-                    device_db = DeviceModel.objects.filter(user=request.user, name=device_name, channel=device_channel)
+                    user_db = NumberModel.objects.filter(device__email=request.user, device__name=device_name, device__channel=device_channel).order_by('time').select_related()#.values('time', 'device__channel', 'device__name', 'data')
+                    device_db = DeviceModel.objects.filter(email=request.user, name=device_name, channel=device_channel)
             user_db.delete()
             device_db.delete()
             return redirect(request.META['HTTP_REFERER'])
@@ -79,7 +78,7 @@ def wrap_boolean_check(v):
 
 @login_required
 def profilefunc(request):
-    username = request.user.get_username()
+    username = request.user
     if request.method == "GET":#GETの処理
         return redirect(request.META['HTTP_REFERER'])
     
@@ -104,10 +103,29 @@ def profilefunc(request):
         except:
             device_send_message_to_line = False
         
-        profile = Profile.objects.get(user=request.user)
-        profile.alive_monitoring = device_alive_monitoring
-        profile.send_message_to_email = device_send_message_to_email
-        profile.line_token = device_line_token
-        profile.send_message_to_line = device_send_message_to_line
-        profile.save()
+        try:
+            device_slack_token = request.POST['slack_token']
+        except:
+            device_slack_token = ''
+        
+        try:
+            device_slack_channel = request.POST['slack_channel']
+        except:
+            device_slack_channel = ''
+
+        try:
+            device_send_message_to_slack = wrap_boolean_check(request.POST['send_message_to_slack'])
+        except:
+            device_send_message_to_slack = False
+        
+        setting = User.objects.get(email=request.user)
+        setting.alive_monitoring = device_alive_monitoring
+        setting.send_message_to_email = device_send_message_to_email
+        setting.line_token = device_line_token
+        setting.send_message_to_line = device_send_message_to_line
+        setting.slack_token = device_slack_token
+        setting.slack_channel = device_slack_channel
+        setting.send_message_to_slack = device_send_message_to_slack
+        setting.save()
+
         return redirect(request.META['HTTP_REFERER'])

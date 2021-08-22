@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_pandas',
+    'slack_sdk',
     'rest_framework',
     'rest_framework_simplejwt',
 ]
@@ -198,3 +199,4 @@ SIMPLE_JWT = {
 
 
 
+AUTH_USER_MODEL = 'iot.User'
