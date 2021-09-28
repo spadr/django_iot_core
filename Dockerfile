@@ -20,7 +20,7 @@ WORKDIR $APP_HOME
 COPY --chown=app:app ./Pipfile .
 COPY --chown=app:app ./Pipfile.lock .
 RUN apt update && \
-    apt install -y libpq5 libxml2 && \
+    apt install -y libpq5 libxml2 cron nano && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*  && \
     pip install pipenv && \
@@ -38,3 +38,5 @@ USER ${UID}
 # run entrypoint shell file
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
+# set crontab
+RUN (crontab -l; echo "* * * * * python3 /usr/src/app/manage.py alive_monitoring") | crontab -
