@@ -38,7 +38,7 @@ class Command(BaseCommand):
                 context = mkmess(dead_device)
                 if user.send_message_to_email:
                     from_email = 'EMAIL_ADDRESS'
-                    subject = 'Your Device Is Stpping'
+                    subject = 'Your Device Is Stopping'
                     try:
                         user.email_user(subject, context, from_email)
                     except:
